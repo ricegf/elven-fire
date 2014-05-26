@@ -1,6 +1,7 @@
 import random
 
 from elvenfire import bonus5
+from elvenfire import languages, randomlanguage
 from elvenfire.abilities import AbilityError
 from elvenfire.abilities.itemabilities import _Ability
 
@@ -19,34 +20,41 @@ class _CharacterAbility (_Ability):
     """Abstract class: a character-learnable ability: physical or mental.
 
     Additional Attributes:
-      self.IIQ    -- effective IIQ of ability
-      self.baseAC -- base Ability Cost for this Ability (used to calculate AC)
+      self.IIQ     -- effective IIQ of ability
+      self.baseAC  -- base Ability Cost for this Ability (used to calculate AC)
+      self.element -- optional specifier for element or type of ability
 
-    To implement, set the abilities attribute to a dictionary mapping
-    {name : baseAC} for all available abilities before calling 
-    Ability.__init__(). If desired, the abilitydescs attribute can be set
-    {name : (IIQ1_desc, IIQ2_desc, IIQ3_desc, IIQ4_desc, IIQ5_desc)} to
-    establish long-style descriptions of each ability.
+    To implement, set the following class attributes:
+      abilities    -- {name : baseAC} for all available abilities
+      abilitydescs -- {name : (IIQ1_desc, IIQ2_desc, IIQ3_desc, IIQ4_desc, IIQ5_desc)}
+                      to establish long-style descriptions of each ability.
+      elements     -- {name : [valid_elements]} only as needed
+      maxIIQexceptions -- {name : max IIQ} only as needed
 
-    Optionally, other methods can be overridden to weight the random results.
+    Optionally, override the following to customize weights:
+      _randomAbility()
+      _randomIIQ()
+      _randomElement()
 
     """
 
     abilities = {}
     abilitydescs = {}
+    elements = {}
     maxIIQexceptions = {}
 
-    def __init__(self, name=None, IIQ=None):
+    def __init__(self, name=None, IIQ=None, element=None):
         """Define all attributes, calculating AC from baseAC and IIQ."""
         self.name = name
         self.IIQ = IIQ
+        self.element = element
 
         # Determine ability name
         if self.name is None:
             self._randomAbility()
             if self.name in self.maxIIQexceptions and self.IIQ is not None:
                 if self.IIQ > self.maxIIQexceptions[self.name]:
-                    self.__init__(name, IIQ)
+                    self.__init__(name, IIQ, element)
         elif (self.name not in self.abilities and 
               (self.name + 's') in self.abilities):
             self.name += 's'
@@ -65,11 +73,23 @@ class _CharacterAbility (_Ability):
             self.IIQ > self.maxIIQexceptions[self.name]):
             self.IIQ = self.maxIIQexceptions[self.name]
 
+        # Determine the element (if any)
+        if self.name in self.elements.keys():
+            if self.element is None:
+                self._randomElement()
+            elif self.element not in self.elements[self.name]:
+                raise AbilityError("Invalid element: %s" % self.element)
+        elif self.element is not None:
+            raise AbilityError("Ability '%s' does not take an element!" %
+                               self.name)                 
+
         # Determine value
         self._lookupAC()
         self._computeAC()
 
     def __str__(self):
+        if self.element is not None:
+            return "%s: %s %s" % (self.name, self.element, self.IIQ)
         return "%s %s" % (self.name, self.IIQ)
 
     def description(self, withname=True):
@@ -82,13 +102,17 @@ class _CharacterAbility (_Ability):
                 return self.abilitydescs[self.name][self.IIQ-1]
         return str(self)
 
+    def _randomAbility(self):
+        """Set self.name and self.baseAC to a random ability."""
+        self.name, self.baseAC = random.choice([i for i in self.abilities.items()])
+
     def _randomIIQ(self):
         """Set self.IIQ to a random (Bonus5) IIQ value."""
         self.IIQ = bonus5()
 
-    def _randomAbility(self):
-        """Set self.name and self.baseAC to a random ability."""
-        self.name, self.baseAC = random.choice([i for i in self.abilities.items()])
+    def _randomElement(self):
+        """Set self.element to a random value for the given ability."""
+        self.element = random.choice(self.elements[self.name])
 
     def _lookupAC(self):
         """Set self.baseAC according to self.name."""
@@ -132,6 +156,11 @@ class PhysicalAbility (_CharacterAbility):
                  'Unarmed Combat' : 500}
 
     maxIIQexceptions = {'Pole Weapons' : 4, 'Leadership' : 3}
+
+    elements = {'Unusual Weapons' : ["Boomerang", "Bola", "Sha-Ken", "Cestus",
+                                     "QuarterStaff", "Lasso", "Whip", "Nunchuks",
+                                     "Blowgun"],
+                'Literacy' : languages}
 
     abilitydescs = {'Sword' : (
                          'Ability to use the knife or a single-handed weapon',
@@ -341,6 +370,12 @@ class PhysicalAbility (_CharacterAbility):
                          ' fall; attacker Dx-6; no side or rear hex;' +
                          ' critical hits at Dx-2')}
 
+    def _randomElement(self):
+        if self.name == "Literacy":
+            self.element = randomlanguage()
+        else:
+            _CharacterAbility._randomElement(self)
+
 
 class MentalAbility (_CharacterAbility):
 
@@ -359,9 +394,11 @@ class MentalAbility (_CharacterAbility):
     EtherealBow = ('Lightning Bolt', 'Ether Arrow', 'Iceball',
                    'Fireball', 'Boulder')
 
-    elements = ('Fire', 'Ice', 'Water', 'Electrical')
+    elements = {'Proof' : ['Fire', 'Ice', 'Water', 'Electrical'],
+                'Create' : ['Fire', 'Shadow', 'Wall']}
+    elements['Sensitize'] = elements['Proof']
+    elements['Destroy'] = elements['Create']
 
-    createables = ('Fire', 'Shadow', 'Wall')
 
     abilities = {'Lightning Bolt' : 5000, 'Ether Arrow' : 5000,
                  'Iceball' : 5000, 'Fireball' : 5000, 'Boulder' : 5000,
@@ -755,38 +792,7 @@ class MentalAbility (_CharacterAbility):
     def __init__(self, name=None, IIQ=None, element=None):
         if name == 'Ethereal Bow':
             name = random.choice(self.EtherealBow)
-        _CharacterAbility.__init__(self, name, IIQ)
-        self.element = element
-        self._checkElement()
-
-    def _checkElement(self):
-        """Generate/verify self.element as applicable."""
-        if ((self.name.startswith('Proof') or 
-             self.name.startswith('Sensitize') or
-             self.name.startswith('Storm') or 
-             self.name.startswith('Calm'))):
-            if self.element is None:
-                self.element = random.choice(self.elements)
-            elif self.element not in self.elements:
-                raise AbilityError("Invalid Proof/Storm element: %s" %
-                                   self.element)
-        elif ((self.name.startswith('Create') or 
-               self.name.startswith('Destroy')) and
-              'Artifact' not in self.name):
-            if self.element is None:
-                self.element = random.choice(self.createables)
-            elif self.element not in self.createables:
-                raise AbilityError("Invalid Creation element: %s" %
-                                   self.element)
-        elif self.element is not None:
-            raise AbilityError("Ability '%s' does not take an element!" %
-                               self.name)
-
-    def __str__(self):
-        if self.element is None:
-            return _CharacterAbility.__str__(self)
-        else:
-            return "%s: %s %s" % (self.name, self.element, self.IIQ)
+        _CharacterAbility.__init__(self, name, IIQ, element)
 
 
 class MentalAbilityWithOpposites (MentalAbility):
@@ -819,7 +825,7 @@ class MentalAbilityWithOpposites (MentalAbility):
         return list
 
     def __init__(self, name=None, IIQ=None, element=None, opposite=None):
-        """Set self.abilities to include pairs.
+        """Set class attributes to include pairs.
 
         self.abilities = {name : baseAC}, including each "primary [+ opposite]"
         self.pairs = {primary : opposite}
@@ -840,6 +846,8 @@ class MentalAbilityWithOpposites (MentalAbility):
                                  self.abilitydescs[opposite])
                     self.abilitydescs[pname] = ['%s -- OR -- %s' % (p, o) 
                                                 for p, o in zipped]
+            if primary in self.elements:
+                self.elements[pname] = self.elements[primary]
 
         # Allow opposite= specifier
         if self.opposite and name is not None:
@@ -879,19 +887,49 @@ class MentalAbilityWithOpposites (MentalAbility):
         return other.name not in self.name  # i.e. other is longer name [+]
 
 
-def PhysicalOrMentalAbility(name=None, IIQ=None):
+def PhysicalOrMentalAbility(name=None, IIQ=None, element=None):
 
     """An Ability that can be either physical or mental, based on a roll."""
 
     if name is None:
         roll = random.randint(1, 6)
         if roll <= 4:
-            return MentalAbilityWithOpposites(name, IIQ)
+            return MentalAbilityWithOpposites(name, IIQ, element)
         else:
-            return PhysicalAbility(name, IIQ)
+            return PhysicalAbility(name, IIQ, element)
     elif name in PhysicalAbility.abilities.keys():
-        return PhysicalAbility(name, IIQ)
+        return PhysicalAbility(name, IIQ, element)
     else:
-        return MentalAbilityWithOpposites(name, IIQ)
+        return MentalAbilityWithOpposites(name, IIQ, element)
+
+
+def UniversityAbility(name=None, IIQ=None, element=None):
+
+    """A physical or mental ability determined by University rules.
+
+    The standard University Course Catalog table has the following:
+      2% chance of each ability
+      3% chance of Pole Weapons"""
+
+    threes = ['Pole Weapons', 'Cross Bows', 'Armor', 'Healing', 'Leadership',
+              'Literacy', 'Physicker', 'Summon']
+
+    fours = ['Sword', 'Ax/Club/Mace', 'Thrown Weapons', 'Drawn Bows',
+             'Animal Handler']
+
+    if name is None:
+        abilities = list(PhysicalAbility.abilities.keys()) + list(MentalAbility.abilities.keys())
+        for a in MentalAbilityWithOpposites.pairs.values():
+            abilities.remove(a)
+        abilities = abilities * 2 + threes + fours * 2
+        name = random.choice(abilities)
+        if name in MentalAbilityWithOpposites.pairs:
+            if random.randint(1, 4) == 1:
+                name = MentalAbilityWithOpposites.pairs[name]
+
+    if name in PhysicalAbility.abilities:
+        return PhysicalAbility(name, IIQ, element)
+    else:
+        return MentalAbilityWithOpposites(name, IIQ, element)
 
 

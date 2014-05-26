@@ -1,6 +1,6 @@
 import random
 
-from elvenfire.abilities.charabilities import PhysicalOrMentalAbility
+from elvenfire.abilities.charabilities import UniversityAbility
 from storemanager.stockitems import _StockItem
 from storemanager.locations import _Store
 
@@ -29,7 +29,7 @@ class Class (_StockItem):
         self.first_day = day
         self.ability = ability
         if ability is None:
-            self.ability = PhysicalOrMentalAbility()
+            self.ability = UniversityAbility()
         self.name = str(self.ability) + " Class"
         self.value = int(self.ability.AC / 10) * 2
         self.days_remaining = self.classtimes[self.ability.IIQ-1]

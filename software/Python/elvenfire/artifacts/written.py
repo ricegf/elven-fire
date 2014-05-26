@@ -1,32 +1,9 @@
 import random
 
 from elvenfire import bonus5, bonus25
+from elvenfire import languages, rarelanguages, randomlanguage
 from elvenfire.artifacts import ArtifactError, _MultiAbilityArtifact
 from elvenfire.abilities.charabilities import *
-
-
-languages = ['Common', 'Elvish', 'Dwarvish', 'Hob/Goblin', 'Orcish', 'Giant',
-             'Dragon', 'Troll', 'Troglodyte', 'Gargoyle', 'Fog Runes', 
-             'Sasquatch']
-rarelanguages = languages[6:]
-
-
-def randomlanguage():
-    roll = random.randint(1, 20)
-    if roll <= 12:
-        return 'Common'
-    elif roll <= 14:
-        return 'Elvish'
-    elif roll <= 16:
-        return 'Dwarvish'
-    elif roll == 17:
-        return 'Hob/Goblin'
-    elif roll == 18:
-        return 'Orcish'
-    elif roll == 19:
-        return 'Giant'
-    else:
-        return random.choice(rarelanguages)
 
 
 class _WrittenArtifact (_MultiAbilityArtifact):
