@@ -1,5 +1,5 @@
 
-from elvenfire.storemanager.search import _Criterion
+from storemanager.search import _Criterion
 
 
 class ANDCriteriaSet (_Criterion):

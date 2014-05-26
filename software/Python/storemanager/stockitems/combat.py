@@ -1,6 +1,6 @@
 
-from elvenfire.storemanager.stockitems import _MultiAbilityStockItem
 from elvenfire.artifacts.combat import Weapon, Armor
+from storemanager.stockitems import _MultiAbilityStockItem
 
 
 class WeaponStockItem (_MultiAbilityStockItem, Weapon):

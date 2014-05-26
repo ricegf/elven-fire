@@ -1,6 +1,6 @@
 
-from elvenfire.storemanager.stockitems import _MultiAbilityStockItem
 from elvenfire.artifacts.written import Scroll, Book
+from storemanager.stockitems import _MultiAbilityStockItem
 
 
 class ScrollStockItem (_MultiAbilityStockItem, Scroll):

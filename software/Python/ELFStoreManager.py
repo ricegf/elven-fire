@@ -3,10 +3,10 @@ import sys
 from PyQt4 import QtGui, QtCore
 
 from elvenfire import ELFError
-from elvenfire.storemanager.GUI.continent import ContinentWidget
+from storemanager.GUI.continent import ContinentWidget
 
 
-VERSION = '0.1.2'
+VERSION = '0.2.0'
 
 
 def main():

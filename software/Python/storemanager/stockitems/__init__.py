@@ -1,7 +1,7 @@
 
 import random
 
-from elvenfire.storemanager import StoreMgrError
+from storemanager import StoreMgrError
 
 
 class StockItemError (StoreMgrError):

@@ -1,6 +1,6 @@
 
-from elvenfire.storemanager.stockitems import _StockItem, _MultiAbilityStockItem
 from elvenfire.artifacts.greater import Ring, Rod
+from storemanager.stockitems import _StockItem, _MultiAbilityStockItem
 
 
 class RodStockItem (_StockItem, Rod):

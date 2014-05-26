@@ -1,4 +1,4 @@
-from elvenfire.storemanager.locations import _Store
+from storemanager.locations import _Store
 from elvenfire.abilities.charabilities import PhysicalOrMentalAbility
 
 class Class:

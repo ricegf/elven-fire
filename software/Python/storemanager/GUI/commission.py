@@ -1,6 +1,6 @@
 from PyQt4 import QtGui, QtCore
 
-from elvenfire.storemanager.GUI.treeitems import ItemTree
+from storemanager.GUI.treeitems import ItemTree
 
 class CommissionWindow(QtGui.QMainWindow):
 

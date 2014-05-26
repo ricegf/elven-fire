@@ -1,12 +1,12 @@
 
 import re
 
-from elvenfire.storemanager.search import _Criterion
 from elvenfire.artifacts.combat import *
 from elvenfire.artifacts.potion import Potion
 from elvenfire.abilities.charabilities import _CharacterAbility
 from elvenfire.abilities.charabilities import *
 from elvenfire.abilities.itemabilities import *
+from storemanager.search import _Criterion
 
 
 class TextCriterion (_Criterion):

@@ -2,14 +2,14 @@ import os
 from operator import attrgetter
 from PyQt4 import QtGui, QtCore
 
-from elvenfire.storemanager.locations import store
-from elvenfire.storemanager.stockitems import _StockItem
-from elvenfire.storemanager.stockitems.special import SpecialArtifactStockItem, STBatteryStockItem, TrainableAnimalStockItem
-from elvenfire.storemanager.stockitems.combat import WeaponStockItem, ArmorStockItem
-from elvenfire.storemanager.stockitems.greater import RodStockItem, RingStockItem
-from elvenfire.storemanager.stockitems.lesser import GemStockItem, AmuletStockItem
-from elvenfire.storemanager.stockitems.written import ScrollStockItem, BookStockItem
-from elvenfire.storemanager.stockitems.potion import *
+from storemanager.locations import store
+from storemanager.stockitems import _StockItem
+from storemanager.stockitems.special import SpecialArtifactStockItem, STBatteryStockItem, TrainableAnimalStockItem
+from storemanager.stockitems.combat import WeaponStockItem, ArmorStockItem
+from storemanager.stockitems.greater import RodStockItem, RingStockItem
+from storemanager.stockitems.lesser import GemStockItem, AmuletStockItem
+from storemanager.stockitems.written import ScrollStockItem, BookStockItem
+from storemanager.stockitems.potion import *
 from elvenfire.abilities.itemabilities import WeaponAbility
 from elvenfire.artifacts.potion import *
 

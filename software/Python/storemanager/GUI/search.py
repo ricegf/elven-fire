@@ -9,10 +9,10 @@ from elvenfire.artifacts.lesser import *
 from elvenfire.artifacts.written import *
 from elvenfire.artifacts.potion import *
 from elvenfire.abilities.charabilities import *
-from elvenfire.storemanager.search.criterion import *
-from elvenfire.storemanager.search.criteriaset import *
-from elvenfire.storemanager.GUI.treeitems import *
-from elvenfire.storemanager.GUI import GUIError
+from storemanager.search.criterion import *
+from storemanager.search.criteriaset import *
+from storemanager.GUI.treeitems import *
+from storemanager.GUI import GUIError
 
 
 class MultiAbilityWidget(QtGui.QWidget):

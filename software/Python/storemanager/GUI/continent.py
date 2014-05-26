@@ -4,10 +4,10 @@ import glob
 
 from PyQt4 import QtGui, QtCore
 
-from elvenfire.storemanager.locations.town import Town
-from elvenfire.storemanager.GUI.town import TownWidget
-from elvenfire.storemanager.GUI.search import SearchWidget, ResultsWindow
-from elvenfire.storemanager.GUI.treeitems import *
+from storemanager.locations.town import Town
+from storemanager.GUI.town import TownWidget
+from storemanager.GUI.search import SearchWidget, ResultsWindow
+from storemanager.GUI.treeitems import *
 
 
 class NewTownWidget(QtGui.QWidget):

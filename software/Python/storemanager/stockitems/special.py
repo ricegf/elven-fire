@@ -1,7 +1,7 @@
 
-from elvenfire.storemanager.stockitems import _StockItem
 from elvenfire.creatures.trainable import TrainableAnimal
 from elvenfire.artifacts.special import SpecialArtifact, STBattery
+from storemanager.stockitems import _StockItem
 
 class TrainableAnimalStockItem (_StockItem):
 

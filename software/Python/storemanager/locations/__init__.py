@@ -3,7 +3,7 @@ import math
 import re
 
 from elvenfire import bonus25
-from elvenfire.storemanager import StoreMgrError
+from storemanager import StoreMgrError
 
 
 class StoreError (StoreMgrError):

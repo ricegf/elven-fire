@@ -1,6 +1,6 @@
 
-from elvenfire.storemanager.stockitems import _StockItem, _MultiAbilityStockItem
 from elvenfire.artifacts.potion import *
+from storemanager.stockitems import _StockItem, _MultiAbilityStockItem
 
 
 class PotionStockItem (_StockItem, Potion):

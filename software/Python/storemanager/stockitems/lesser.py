@@ -1,6 +1,6 @@
 
-from elvenfire.storemanager.stockitems import _StockItem, _MultiAbilityStockItem
 from elvenfire.artifacts.lesser import Amulet, Gem
+from storemanager.stockitems import _StockItem, _MultiAbilityStockItem
 
 
 class GemStockItem (_StockItem, Gem):

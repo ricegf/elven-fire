@@ -1,12 +1,12 @@
 import random
 
-from elvenfire.storemanager.locations import StoreError, _Store
-from elvenfire.storemanager.stockitems.special import *
-from elvenfire.storemanager.stockitems.combat import *
-from elvenfire.storemanager.stockitems.greater import *
-from elvenfire.storemanager.stockitems.lesser import *
-from elvenfire.storemanager.stockitems.written import *
-from elvenfire.storemanager.stockitems.potion import *
+from storemanager.locations import StoreError, _Store
+from storemanager.stockitems.special import *
+from storemanager.stockitems.combat import *
+from storemanager.stockitems.greater import *
+from storemanager.stockitems.lesser import *
+from storemanager.stockitems.written import *
+from storemanager.stockitems.potion import *
 
 class GeneralStore (_Store):
 

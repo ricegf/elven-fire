@@ -1,17 +1,17 @@
 
 from PyQt4 import QtGui, QtCore
 
-from elvenfire.storemanager.locations.store import *
 from elvenfire.artifacts.special import *
 from elvenfire.artifacts.combat import *
 from elvenfire.artifacts.greater import *
 from elvenfire.artifacts.lesser import *
 from elvenfire.artifacts.written import *
 from elvenfire.artifacts.potion import *
-from elvenfire.storemanager.GUI.search import SearchWidget
-from elvenfire.storemanager.GUI.treeitems import *
-from elvenfire.storemanager.GUI.additem import AddItemWidget
-from elvenfire.storemanager.GUI.commission import CommissionWindow
+from storemanager.locations.store import *
+from storemanager.GUI.search import SearchWidget
+from storemanager.GUI.treeitems import *
+from storemanager.GUI.additem import AddItemWidget
+from storemanager.GUI.commission import CommissionWindow
 
 
 class NewStoreWidget(QtGui.QWidget):

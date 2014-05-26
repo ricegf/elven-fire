@@ -3,8 +3,8 @@ import pickle
 import os
 
 from elvenfire import bonus5
-from elvenfire.storemanager.locations import TownError, _Store
-from elvenfire.storemanager.locations.store import GeneralStore
+from storemanager.locations import TownError, _Store
+from storemanager.locations.store import GeneralStore
 
 
 class Town:

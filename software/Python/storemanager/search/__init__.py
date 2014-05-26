@@ -1,4 +1,4 @@
-from elvenfire.storemanager import StoreMgrError
+from storemanager import StoreMgrError
 
 
 class SearchError (StoreMgrError):
