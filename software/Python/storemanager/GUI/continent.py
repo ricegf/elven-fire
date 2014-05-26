@@ -345,7 +345,7 @@ class ContinentWidget(QtGui.QWidget):
     def new_town(self):
         """Create a new town."""
         tw = NewTownWidget(self)
-        self.connect(tw.ntw, QtCore.SIGNAL('town_created'), 
+        self.connect(tw, QtCore.SIGNAL('town_created'), 
                      self.new_town_done)
 
     def new_town_done(self):
@@ -384,6 +384,7 @@ class ContinentWidget(QtGui.QWidget):
             town.delete()
             self.townselect.removeItemWidget(self.townselect.currentItem(), 0)
             self.townlist.remove(town)
+            self._buildlist(recheck=True)
 
     def open_town(self):
         town = self._selected()

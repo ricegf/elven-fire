@@ -544,9 +544,9 @@ class TownWidget(QtGui.QWidget):
                 if res != QtGui.QMessageBox.Yes:
                     return
             store.name = name
-            i.rename(str(store))
             self.town.save()
             self.parent._buildlist()
+            self._buildtree()
 
     def deletestore(self):
         """Delete selected store."""
@@ -557,7 +557,7 @@ class TownWidget(QtGui.QWidget):
                                      'Please select a store and try again.',
                                      QtGui.QMessageBox.Ok).exec_()
         res = QtGui.QMessageBox(QtGui.QMessageBox.Question,
-                                'Confirm %s Deletion' % i.store.name,
+                                'Confirm %s Deletion' % store.name,
                                 'Are you SURE you wish to delete %s' % store,
                                 QtGui.QMessageBox.Yes | 
                                 QtGui.QMessageBox.No).exec_()
