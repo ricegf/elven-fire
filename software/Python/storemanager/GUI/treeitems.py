@@ -2,7 +2,10 @@ import os
 from operator import attrgetter
 from PyQt4 import QtGui, QtCore
 
+from elvenfire.abilities.itemabilities import WeaponAbility
+from elvenfire.artifacts.potion import *
 from storemanager.locations import store
+from storemanager.locations.university import Class
 from storemanager.stockitems import _StockItem
 from storemanager.stockitems.special import SpecialArtifactStockItem, STBatteryStockItem, TrainableAnimalStockItem
 from storemanager.stockitems.combat import WeaponStockItem, ArmorStockItem
@@ -10,8 +13,6 @@ from storemanager.stockitems.greater import RodStockItem, RingStockItem
 from storemanager.stockitems.lesser import GemStockItem, AmuletStockItem
 from storemanager.stockitems.written import ScrollStockItem, BookStockItem
 from storemanager.stockitems.potion import *
-from elvenfire.abilities.itemabilities import WeaponAbility
-from elvenfire.artifacts.potion import *
 
 class AbilityTree (QtGui.QTreeWidgetItem):
 
@@ -322,34 +323,39 @@ class UniversityTree (QtGui.QTreeWidgetItem):
 
     def __init__(self, parent, university):
         QtGui.QTreeWidgetItem.__init__(self, parent)
-        self.university = university
+        self.store = university
 
         # Columns:
         col_icon = 0  # not used
         col_name = 1
+        col_FMV = 2
+        col_price = 3
 
         self.setText(col_name, university.name)
 
         for day in range(5):
-            dayname = ['Monday', 'Tuesday', 'Wednesday', 
-                       'Thursday', 'Friday'][day]
-            UniversityDayTree(self, dayname, courses)
+            dayname = Class.Days[day]
+            UniversityDayTree(self, dayname, university.getitems(day))
 
 
 class UniversityDayTree (QtGui.QTreeWidgetItem):
 
     def __init__(self, parent, dayname, courses):
         QtGui.QTreeWidgetItem.__init__(self, parent)
-        self.university = parent.university
+        self.university = parent.store
 
         # Columns:
         col_icon = 0  # not used
         col_name = 1
+        col_FMV = 2
+        col_price = 3
 
         self.setText(col_name, dayname)
 
         for course in courses:
             i = QtGui.QTreeWidgetItem(self)
-            i.setText(col_name, str(course))
+            i.item = course
+            i.setText(col_name, str(course.name))
+            i.setText(col_price, str(course.value))
 
 

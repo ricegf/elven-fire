@@ -8,6 +8,7 @@ from elvenfire.artifacts.lesser import *
 from elvenfire.artifacts.written import *
 from elvenfire.artifacts.potion import *
 from storemanager.locations.store import *
+from storemanager.locations.university import *
 from storemanager.GUI.search import SearchWidget
 from storemanager.GUI.treeitems import *
 from storemanager.GUI.additem import AddItemWidget
@@ -25,6 +26,7 @@ class NewStoreWidget(QtGui.QWidget):
                  ('Armor Store', ArmorStore, 'Armor and shields'),
                  ('Magic Store', MagicStore, 'Small store containing rings, rods, amulets, gems, and special artifacts.'),
                  ('Gem Store', GemStore, 'Carries gems and the occasional strength battery'),
+                 ('University', University, 'Offers classes in assorted skills'),
                 ]
 
     def show(self):
@@ -413,9 +415,12 @@ class TownWidget(QtGui.QWidget):
         self.storeselect.clear()
         self.storeselect.setColumnCount(4)
         for store in self.town.stores:
-            s = StoreTree(self.storeselect, store)
-            if expand is not None and expand == store:
-                s.setExpanded(True)
+            if isinstance(store, University):
+                UniversityTree(self.storeselect, store)
+            else:
+                s = StoreTree(self.storeselect, store)
+                if expand is not None and expand == store:
+                    s.setExpanded(True)
         self.parent._buildlist()
 
 
@@ -424,7 +429,7 @@ class TownWidget(QtGui.QWidget):
     def update(self):
         res = QtGui.QMessageBox(QtGui.QMessageBox.Warning,
                                 'Confirm Update',
-                                'Are you SURE you wish to update %s' % self.town
+                                'Are you SURE you wish to update %s' % self.town.name
                                 + ' at this time? Prices will be updated, and'
                                 + ' items may be sold or added when you update.',
                                 QtGui.QMessageBox.Yes | QtGui.QMessageBox.No).exec_()
@@ -468,6 +473,11 @@ class TownWidget(QtGui.QWidget):
                                      'No Store Selected',
                                      'Please select a store and try again.',
                                      QtGui.QMessageBox.Ok).exec_()
+        if isinstance(store, University):
+            return QtGui.QMessageBox(QtGui.QMessageBox.Warning,
+                                     'University, Not Store',
+                                     'You cannot consign items at the university.',
+                                     QtGui.QMessageBox.Ok).exec_()
         AddItemWidget(self, store)
 
     def purchase(self):
@@ -486,19 +496,26 @@ class TownWidget(QtGui.QWidget):
             return
         elif isinstance(item, HealingPotion):
             return self.purchase_healingpotion(store)
-        res = QtGui.QMessageBox(QtGui.QMessageBox.Warning,
+        if isinstance(item, Class):
+            res = QtGui.QMessageBox(QtGui.QMessageBox.Warning,
+                                'Confirm Enrollment',
+                                'You may enroll in %s' % item.short() +
+                                ' for $%s.' % item.price(),
+                                QtGui.QMessageBox.Ok).exec_()
+        else:
+            res = QtGui.QMessageBox(QtGui.QMessageBox.Warning,
                                 'Confirm Purchase',
                                 'Are you SURE you wish to purchase %s' % 
                                 item.short() +
                                 ' for $%s?' % item.price(),
                                 QtGui.QMessageBox.Yes | 
                                 QtGui.QMessageBox.No).exec_()
-        if (res == QtGui.QMessageBox.Yes):
-            store.purchase(item)
-            self.town.save()
-            self._buildtree(expand=store)
-            if item.commission:
-                CommissionWindow(self, [item])
+            if (res == QtGui.QMessageBox.Yes):
+                store.purchase(item)
+                self.town.save()
+                self._buildtree(expand=store)
+                if item.commission:
+                    CommissionWindow(self, [item])
 
     def purchase_healingpotion(self, store):
         doses, ok = QtGui.QInputDialog.getInt(self, 'Number of Doses',
@@ -545,7 +562,6 @@ class TownWidget(QtGui.QWidget):
                     return
             store.name = name
             self.town.save()
-            self.parent._buildlist()
             self._buildtree()
 
     def deletestore(self):
